@@ -33,6 +33,19 @@ func (r *Route) Remove(runner runner.Runner) ([]byte, error) {
 	return out, err
 }
 
+// Adds new route to the routing table
+func (r *Route) Add(runner runner.Runner) ([]byte, error) {
+	out, err := runner.Run("netsh", "interface", "ipv4", "add", "route", r.Network.String(), r.InterfaceID)
+
+	// For some reason this requires multiple additions to work with the VPN, attempt a second addition if the first succeeds
+	if err == nil {
+		time.Sleep(500 * time.Millisecond)
+		runner.Run("netsh", "interface", "ipv4", "add", "route", r.Network.String(), r.InterfaceID)
+	}
+
+	return out, err
+}
+
 func (r Route) String() string {
 	return fmt.Sprintf("Network: %s, InterfaceID: %s", r.Network, r.InterfaceID)
 }
