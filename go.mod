@@ -1,4 +1,4 @@
-module github.com/wheatevo/wslroutesvc
+module github.com/marko2276/wslroutesvc
 
 go 1.15
 
